@@ -1,9 +1,11 @@
 canvas{
 	border:2px solid black;
 	display: block;
-	margin: 100px auto;
+	margin:  auto;
+	height:100%;
 }
 html,body{
 	margin: 0px;
 	padding: 0px;
+	overflow: hidden;
 }

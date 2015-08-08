@@ -14,13 +14,15 @@ window.onload = function(){
 
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
-            canvasW = 800,
-            canvasH = 800;
+            canvasW,
+            canvasH;
 
         // resize the canvas to fill browser window dynamically
-        //window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('resize', resizeCanvas, false);
         
         function resizeCanvas() {
+            canvasW = window.innerHeight;
+            canvasH = window.innerHeight;
             canvas.width = canvasW;
             canvas.height = canvasH;
             render(); 
@@ -29,13 +31,15 @@ window.onload = function(){
         
         function render() {
         	drawGrid();
+        	addPlayers();
         }
+        
         function getInitGlobalState(){
         	var globalState = [];
         	for(var i = 0; i < 11; i++){
         		globalState.push([]);
         		for(var j = 0 ; j < 11; j++){
-        			globalState[i].push(j);
+        			globalState[i].push(0);
         		}
         	}
         	return globalState;
