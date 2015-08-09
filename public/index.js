@@ -2,14 +2,25 @@ window.onload = function(){
 		
 		//Board
         var globalState = getInitGlobalState();
+        var cubeW,
+            cubeH;
         
         // chief/king is fist
         // shield are one's protecting king
         // swords are those trying to capture king
-        var colorMap = {
-        	"fist" : "#efc818",
-        	"shield" : "#27ae60",
-        	"swords" : "#e65243"
+        var objectMap = {
+        	"fist" : {
+                        color:"#efc818",
+                        initPos:[{x:5,y:5}]
+                    },
+        	"shield" : {
+                        color: "#27ae60",
+                        initPos:[]
+                    },
+        	"swords" : {
+                        color: "#e65243",
+                        initPos:[]
+                    }
         }
 
         var canvas = document.getElementById('canvas'),
@@ -33,6 +44,20 @@ window.onload = function(){
         	drawGrid();
         	addPlayers();
         }
+
+        function addPlayers(){
+            for(var key in objectMap){
+                var arr = objectMap[key].initPos;
+                for(var pos in arr){                    
+                    drawRect(arr[pos].x*cubeW, arr[pos].y*cubeH, cubeW, cubeH, objectMap[key].color);
+                }
+            }
+        }
+
+        function drawRect(x, y, w, h, c){
+            ctx.fillStyle = c;
+            ctx.fillRect(x, y, w, h);
+        }
         
         function getInitGlobalState(){
         	var globalState = [];
@@ -48,9 +73,8 @@ window.onload = function(){
         function drawGrid(){
         	var h = canvas.height,
         	 	w = canvas.width;
-        	var cubeW = w/11,
-        		cubeH = h/11;
-        	console.log(cubeH, cubeW)
+        	cubeW = w/11;
+        	cubeH = h/11;
         	for(var i = 1; i < 11; i++){
         		drawLine(cubeW*i, 0, cubeW*i, h);
         		drawLine(0, cubeH*i, w, cubeH*i);
