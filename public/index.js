@@ -11,22 +11,40 @@ window.onload = function(){
         var objectMap = {
         	"fist" : {
                         color:"#efc818",
-                        initPos:[{x:5,y:5}]
+                        pos:[{x:5,y:5}]
                     },
         	"shield" : {
                         color: "#27ae60",
-                        initPos:[]
+                        pos:[
+                            {x:5, y:3},
+                            {x:4, y:4}, {x:5, y:4}, {x:6, y:4},
+                            {x:3, y:5},
+                            {x:4, y:4}, {x:4, y:5}, {x:4, y:6},
+                            {x:7, y:5},
+                            {x:6, y:4}, {x:6, y:5}, {x:6, y:6},
+                            {x:5, y:7},
+                            {x:4, y:6}, {x:5, y:6}, {x:6, y:6}
+                        ]
                     },
         	"swords" : {
                         color: "#e65243",
-                        initPos:[]
+                        pos:[
+                            {x:1, y:5},
+                            {x:0, y:3},{x:0, y:4},{x:0, y:5},{x:0, y:6},{x:0, y:7},
+                            {x:5, y:1},
+                            {x:3, y:0},{x:4, y:0},{x:5, y:0},{x:6, y:0},{x:7, y:0},
+                            {x:9, y:5},
+                            {x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:10, y:7},
+                            {x:5, y:9},
+                            {x:3, y:10},{x:4, y:10},{x:5, y:10},{x:6, y:10},{x:7, y:10}
+                        ]
                     }
         }
 
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
             canvasW,
-            canvasH;
+            canvasH ;
 
         // resize the canvas to fill browser window dynamically
         window.addEventListener('resize', resizeCanvas, false);
@@ -41,15 +59,19 @@ window.onload = function(){
         resizeCanvas();
         
         function render() {
-        	drawGrid();
-        	addPlayers();
+            clearRect();
+            setupBoard();
         }
 
+        function clearRect(){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
         function addPlayers(){
             for(var key in objectMap){
-                var arr = objectMap[key].initPos;
+                var arr = objectMap[key].pos;
                 for(var pos in arr){                    
-                    drawRect(arr[pos].x*cubeW, arr[pos].y*cubeH, cubeW, cubeH, objectMap[key].color);
+                    drawRect(arr[pos].x*cubeW + 5, arr[pos].y*cubeH + 5, cubeW - 10, cubeH - 10, objectMap[key].color);
                 }
             }
         }
@@ -91,6 +113,9 @@ window.onload = function(){
         }
 
        	function setupBoard(){
-
+            drawGrid();
+            addPlayers();
        	}
+
+        // function to find the square based on x,y of click
 }
