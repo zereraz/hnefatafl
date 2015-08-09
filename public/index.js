@@ -4,7 +4,9 @@ window.onload = function(){
         var globalState = getInitGlobalState();
         var cubeW,
             cubeH;
-        var isSquareSelected = false;
+        var selectedSquare = null,
+            moveToSquare = null,
+            selectedColor = "#4e4e56";
 
         // chief/king is fist
         // shield are one's protecting king
@@ -69,6 +71,9 @@ window.onload = function(){
         }
         
         function addPlayers(){
+            if(selectedSquare){
+                drawRect(selectedSquare.x*cubeW, selectedSquare.y*cubeH, cubeW, cubeH, selectedColor);
+            }
             for(var key in objectMap){
                 var arr = objectMap[key].pos;
                 for(var pos in arr){                    
@@ -119,18 +124,61 @@ window.onload = function(){
        	}
         canvas.addEventListener("mousedown", getPosition, false);
 
+
+        // bad code, refactor please!
         function getPosition(event){
             var pos = {};
             pos.x = event.x - canvas.offsetLeft;
             pos.y = event.y - canvas.offsetTop;
-            var square;
-            if(square = posToSquare(pos)){
-                // square belongs to a piece
-                isSquareSelected = true;
+            if(!selectedSquare){
+                if(selectedSquare = posToSquare(pos)){
+                    render();
+                    // square belongs to a piece
+                    
+                }else{
+                    // do nothing, empty square                    
+                    selectedSquare = null;
+                }
             }else{
-                // do nothing, empty square
-                isSquareSelected = false;
+                // move that square
+                //find square
+                if(moveToSquare = posToSquarePos(pos)){
+                    if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
+                        findAndReplace(selectedSquare, moveToSquare);
+                        render();
+                        selectedSquare = null;
+                    }else{
+                        selectedSquare = null;
+                    }
+                }else{
+
+                }
+                selectedSquare = null;
+                render();
+            }            
+        }
+
+        function isValidMove(selected, moveTo){
+            //also check if nothing is in path
+            if(selected.x === moveTo.x || selected.y === moveTo.y){
+                return true;
+            }else{
+                return false;
             }
+        }
+        
+        function findAndReplace(square, newSquare){
+            for(var key in objectMap){
+                var arr = objectMap[key].pos;
+                for(var pos in arr){
+                    if(arr[pos] === square){
+                        arr[pos] = newSquare;
+                    }
+                }
+            }
+
+            console.log(arr);
+              
         }
 
         function posToSquare(clickPos){
@@ -145,6 +193,20 @@ window.onload = function(){
             return null;
         }
 
+        function posToSquarePos(clickPos){
+            for(var i = 0; i < 11; i++){
+                for(var j = 0; j < 11; j++){
+                    if(i*cubeW <= clickPos.x && (i+1)*cubeW > clickPos.x && j*cubeH < clickPos.y && (j+1)*cubeH > clickPos.y ){
+                        return {x:i, y:j}
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
         // function to find the square based on x,y of click
         // highlight allowed moves with #c3fd53
 }
+
