@@ -22,11 +22,11 @@ window.onload = function(){
                             {x:5, y:3},
                             {x:4, y:4}, {x:5, y:4}, {x:6, y:4},
                             {x:3, y:5},
-                            {x:4, y:4}, {x:4, y:5}, {x:4, y:6},
+                            {x:4, y:5}, {x:4, y:6},
                             {x:7, y:5},
-                            {x:6, y:4}, {x:6, y:5}, {x:6, y:6},
+                            {x:6, y:5}, {x:6, y:6},
                             {x:5, y:7},
-                            {x:4, y:6}, {x:5, y:6}, {x:6, y:6}
+                            {x:5, y:6}
                         ]
                     },
         	"swords" : {
@@ -49,8 +49,6 @@ window.onload = function(){
             canvasW,
             canvasH ;
 
-        // resize the canvas to fill browser window dynamically
-        window.addEventListener('resize', resizeCanvas, false);
         
         function resizeCanvas() {
             canvasW = window.innerHeight;
@@ -122,7 +120,6 @@ window.onload = function(){
             drawGrid();
             addPlayers();
        	}
-        canvas.addEventListener("click", getPosition, false);
 
 
         // bad code, refactor please!
@@ -144,7 +141,10 @@ window.onload = function(){
                 //find square
                 if(moveToSquare = posToSquarePos(pos)){
                     if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
+                        console.log(selectedSquare, moveToSquare);
+                        var p = objectMap;
                         findAndReplace(selectedSquare, moveToSquare);
+                        console.log(p ===   objectMap);
                         render();
                         selectedSquare = null;
                     }else{
@@ -176,8 +176,6 @@ window.onload = function(){
                     }
                 }
             }
-
-            console.log(arr);
               
         }
 
@@ -205,7 +203,14 @@ window.onload = function(){
         }
 
 
+        function addEvents(){
 
+            canvas.addEventListener("click", getPosition, false);
+            // resize the canvas to fill browser window dynamically
+            window.addEventListener('resize', resizeCanvas, false);
+        }
+
+        addEvents();
         // function to find the square based on x,y of click
         // highlight allowed moves with #c3fd53
 }
