@@ -42,6 +42,14 @@ window.onload = function(){
                             {x:3, y:10},{x:4, y:10},{x:5, y:10},{x:6, y:10},{x:7, y:10}
                         ]
                     }
+        };
+
+        var specialSquares = {
+                color: "#c0d5db",
+                pos:[
+                    {x:5,y:5},
+                    {x:0, y:0},{x:0, y:10},{x:10, y:0},{x:10, y:10}
+                ]
         }
 
         var canvas = document.getElementById('canvas'),
@@ -80,6 +88,13 @@ window.onload = function(){
             }
         }
 
+        function drawBoard(){
+            var board = specialSquares.pos;
+            for(var pos in board){
+                drawRect(board[pos].x*cubeW + 5, board[pos].y*cubeH + 5, cubeW - 10, cubeH - 10, specialSquares.color);
+            }
+        }
+
         function drawRect(x, y, w, h, c){
             ctx.fillStyle = c;
             ctx.fillRect(x, y, w, h);
@@ -105,8 +120,6 @@ window.onload = function(){
         		drawLine(cubeW*i, 0, cubeW*i, h);
         		drawLine(0, cubeH*i, w, cubeH*i);
         	}
-
-
         }
 
         function drawLine(x1,y1, x2,y2){
@@ -118,6 +131,7 @@ window.onload = function(){
 
        	function setupBoard(){
             drawGrid();
+            drawBoard();
             addPlayers();
        	}
 
@@ -161,11 +175,17 @@ window.onload = function(){
         function isValidMove(selected, moveTo){
             //also check if nothing is in path
             if(selected.x === moveTo.x || selected.y === moveTo.y){
-                return true;
+                if(true)
+                    return true;
+                else{
+                    return false;
+                }
             }else{
                 return false;
             }
         }
+
+        function posInSpecialSquare
         
         function findAndReplace(square, newSquare){
             for(var key in objectMap){
