@@ -122,14 +122,14 @@ window.onload = function(){
             drawGrid();
             addPlayers();
        	}
-        canvas.addEventListener("mousedown", getPosition, false);
+        canvas.addEventListener("click", getPosition, false);
 
 
         // bad code, refactor please!
         function getPosition(event){
             var pos = {};
-            pos.x = event.x - canvas.offsetLeft;
-            pos.y = event.y - canvas.offsetTop;
+            pos.x = (event.x || event.clientX) - canvas.offsetLeft;
+            pos.y = (event.y || event.clientY) - canvas.offsetTop;
             if(!selectedSquare){
                 if(selectedSquare = posToSquare(pos)){
                     render();
