@@ -185,7 +185,9 @@ window.onload = function(){
             }
         }
 
-        function posInSpecialSquare
+        function posInSpecialSquare(){
+            
+        }
         
         function findAndReplace(square, newSquare){
             for(var key in objectMap){
