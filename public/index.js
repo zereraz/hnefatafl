@@ -1,10 +1,11 @@
 window.onload = function(){
-		
+		//globals
 		//Board
         var globalState = getInitGlobalState();
         var cubeW,
             cubeH;
-        
+        var isSquareSelected = false;
+
         // chief/king is fist
         // shield are one's protecting king
         // swords are those trying to capture king
@@ -116,6 +117,34 @@ window.onload = function(){
             drawGrid();
             addPlayers();
        	}
+        canvas.addEventListener("mousedown", getPosition, false);
+
+        function getPosition(event){
+            var pos = {};
+            pos.x = event.x - canvas.offsetLeft;
+            pos.y = event.y - canvas.offsetTop;
+            var square;
+            if(square = posToSquare(pos)){
+                // square belongs to a piece
+                isSquareSelected = true;
+            }else{
+                // do nothing, empty square
+                isSquareSelected = false;
+            }
+        }
+
+        function posToSquare(clickPos){
+              for(var key in objectMap){
+                var arr = objectMap[key].pos;
+                for(var pos in arr){                
+                    if(arr[pos].x*cubeW <= clickPos.x && (arr[pos].x+1)*cubeW > clickPos.x && arr[pos].y*cubeH < clickPos.y && (arr[pos].y+1)*cubeH > clickPos.y){
+                        return arr[pos];
+                    }
+                }
+            }
+            return null;
+        }
 
         // function to find the square based on x,y of click
+        // highlight allowed moves with #c3fd53
 }
