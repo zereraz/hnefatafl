@@ -155,6 +155,7 @@ window.onload = function(){
                 if(moveToSquare = posToSquarePos(pos)){
                     if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
                         findAndReplace(selectedSquare, moveToSquare);
+                        checkAllPlayerDeath();
                         render();
                         selectedSquare = null;
                     }else{
@@ -166,6 +167,18 @@ window.onload = function(){
                 selectedSquare = null;
                 render();
             }            
+        }
+
+        function getRole(square){
+            for(var key in objectMap){
+                var arr = objectMap[key].pos;
+                for(var pos in arr){
+                    if(arr[pos].x === square.x && arr[pos].y === square.y){
+                        return key;
+                    }
+                }
+            }
+            return 'empty';
         }
 
         function isValidMove(selected, moveTo){
@@ -263,6 +276,41 @@ window.onload = function(){
                 }
             }
             return null;
+        }
+
+        function checkAllPlayerDeath(){
+              for(var key in objectMap){
+                var arr = objectMap[key].pos;
+                for(var pos in arr){
+                    checkPlayerDeath(arr[pos]);       
+                }
+            }
+        }
+        // please refactor
+        function checkPlayerDeath(square){
+            var currentRole = getRole(square);
+            if(currentRole === 'shield' || currentRole === 'fist'){
+                if(getRole({x:square.x+1, y:square.y}) === 'swords' && getRole({x:square.x-1, y:square.y}) === 'swords' || getRole({x:square.x, y:square.y+1}) === 'swords' && getRole({x:square.x, y:square.y-1}) === 'swords'){
+                    removeSquare(square, currentRole);                    
+                }
+            }else if(currentRole === 'swords'){
+                if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1 &&  ['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1 || ['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1 && ['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
+                    removeSquare(square, currentRole);                    
+                }
+            }else{
+                //empty
+                return;
+            }
+        }
+
+        function removeSquare(square, role){
+            var arr = objectMap[role].pos;
+            for(var i = 0; i < arr.length; i++){ 
+                if(arr[i].x === square.x && arr[i].y === square.y){
+                    arr.splice(i, 1);
+                    return;
+                }
+            }
         }
 
         function posToSquarePos(clickPos){
