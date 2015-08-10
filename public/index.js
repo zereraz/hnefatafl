@@ -14,7 +14,7 @@ window.onload = function(){
         var objectMap = {
         	"fist" : {
                         color:"#efc818",
-                        pos:[{x:5,y:5}]
+                        pos:[{x:5, y:5}]
                     },
         	"shield" : {
                         color: "#27ae60",
@@ -47,7 +47,7 @@ window.onload = function(){
         var specialSquares = {
                 color: "#c0d5db",
                 pos:[
-                    {x:5,y:5},
+                    {x:5, y:5},
                     {x:0, y:0},{x:0, y:10},{x:10, y:0},{x:10, y:10}
                 ]
         }
@@ -152,13 +152,9 @@ window.onload = function(){
                 }
             }else{
                 // move that square
-                //find square
                 if(moveToSquare = posToSquarePos(pos)){
                     if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
-                        console.log(selectedSquare, moveToSquare);
-                        var p = objectMap;
                         findAndReplace(selectedSquare, moveToSquare);
-                        console.log(p ===   objectMap);
                         render();
                         selectedSquare = null;
                     }else{
@@ -175,36 +171,81 @@ window.onload = function(){
         function isValidMove(selected, moveTo){
             //also check if nothing is in path
             if(selected.x === moveTo.x || selected.y === moveTo.y){
-                if(true)
-                    return true;
-                else{
-                    return false;
-                }
+                return nothingBetween(selected, moveTo);
             }else{
                 return false;
             }
         }
 
+        function nothingBetween(selected, moveTo){
+            //moving horizontally
+            var from,
+                to;
+            if(selected.x - moveTo.x!==0){
+                if(selected.x > moveTo.x){
+                    to = selected.x;
+                    from = moveTo.x;
+                }else{
+                    to = moveTo.x;
+                    from = selected.x;
+                }
+                for (var i = from+1; i < to; i++) {
+                    if(find(i, selected.y)){
+                        return false;
+                    }
+                };
+            }else{
+                //moving vertically
+                if(selected.y > moveTo.y){
+                    to = selected.y;
+                    from = moveTo.y;
+                }else{
+                    to = moveTo.y;
+                    from = selected.y;
+                }
+                for (var i = from+1; i < to; i++) {
+                    if(find(selected.x, i)){
+                        return false;
+                    }
+                };
+
+            }
+            return true;
+        }
+
+        // need to figure this out
         function posInSpecialSquare(){
             
         }
         
+        //use the find function here
         function findAndReplace(square, newSquare){
             for(var key in objectMap){
                 var arr = objectMap[key].pos;
                 for(var pos in arr){
-                    if(arr[pos] === square){
+                    if(arr[pos].x === square.x && arr[pos].y === square.y){
                         arr[pos] = newSquare;
                     }
                 }
-            }
-              
+            }     
         }
+
+        function find(x, y){
+            for(var key in objectMap){
+                var arr = objectMap[key].pos;
+                for(var pos in arr){
+                    if(arr[pos].x === x && arr[pos].y === y){
+                        return true;//return pos
+                    }
+                }
+            }
+            return false;
+        }        
 
         function posToSquare(clickPos){
               for(var key in objectMap){
                 var arr = objectMap[key].pos;
-                for(var pos in arr){                
+                for(var pos in arr){
                     if(arr[pos].x*cubeW <= clickPos.x && (arr[pos].x+1)*cubeW > clickPos.x && arr[pos].y*cubeH < clickPos.y && (arr[pos].y+1)*cubeH > clickPos.y){
                         return arr[pos];
                     }
@@ -223,7 +264,6 @@ window.onload = function(){
             }
             return null;
         }
-
 
         function addEvents(){
 
