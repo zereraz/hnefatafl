@@ -153,7 +153,7 @@ window.onload = function(){
             }else{
                 // move that square
                 if(moveToSquare = posToSquarePos(pos)){
-                    if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
+                    if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare) && !posInSpecialSquare(posToSquarePos(pos))){
                         findAndReplace(selectedSquare, moveToSquare);
                         render();
                         selectedSquare = null;
@@ -214,8 +214,13 @@ window.onload = function(){
         }
 
         // need to figure this out
-        function posInSpecialSquare(){
-            
+        function posInSpecialSquare(square){
+            for(var i in specialSquares.pos){
+                if(specialSquares.pos[i].x === square.x && specialSquares.pos[i].y === square.y){
+                    return true;
+                }
+            }
+            return false;
         }
         
         //use the find function here
