@@ -153,7 +153,7 @@ window.onload = function(){
             }else{
                 // move that square
                 if(moveToSquare = posToSquarePos(pos)){
-                    if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare) && !posInSpecialSquare(posToSquarePos(pos))){
+                    if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
                         findAndReplace(selectedSquare, moveToSquare);
                         render();
                         selectedSquare = null;
@@ -171,10 +171,16 @@ window.onload = function(){
         function isValidMove(selected, moveTo){
             //also check if nothing is in path
             if(selected.x === moveTo.x || selected.y === moveTo.y){
-                return nothingBetween(selected, moveTo);
+                if(!posInSpecialSquare(moveTo) || isKing(selected))
+                    return nothingBetween(selected, moveTo);
             }else{
                 return false;
             }
+        }
+
+        function isKing(square){
+            var king = objectMap.fist.pos[0];
+            return square.x === king.x && square.y === king.y;
         }
 
         function nothingBetween(selected, moveTo){
