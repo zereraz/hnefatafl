@@ -146,7 +146,7 @@ window.onload = function(){
 
         function showValidMoves(){
           if(validMoves.length){
-            drawArray(validMoves, 'red', 'circle');
+            drawArray(validMoves, '#452945', 'circle');
             validMoves = [];
           }else{
             return;
@@ -174,7 +174,7 @@ window.onload = function(){
                         findAndReplace(selectedSquare, moveToSquare);
                         selectedSquare = null;
                         render();
-                    }else{
+                    }else if(posToSquare(pos)){
                           selectedSquare = moveToSquare;
                           allMoves(selectedSquare);
                           render();
