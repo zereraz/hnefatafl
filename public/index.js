@@ -163,8 +163,6 @@ window.onload = function(){
                 if(selectedSquare = posToSquare(pos)){
                     allMoves(selectedSquare);
                     render();
-                    // square belongs to a piece
-
                 }else{
                     // do nothing, empty square
                     selectedSquare = null;
@@ -174,16 +172,18 @@ window.onload = function(){
                 if(moveToSquare = posToSquarePos(pos)){
                     if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
                         findAndReplace(selectedSquare, moveToSquare);
+                        selectedSquare = null;
                         render();
-                        selectedSquare = null;
                     }else{
-                        selectedSquare = null;
+                          selectedSquare = moveToSquare;
+                          allMoves(selectedSquare);
+                          render();
                     }
                 }else{
 
                 }
-                selectedSquare = null;
-                render();
+                // selectedSquare = null;
+                // render();
             }
         }
 
@@ -200,7 +200,6 @@ window.onload = function(){
         }
 
         function isValidMove(selected, moveTo){
-            //also check if nothing is in path
             if(selected.x === moveTo.x || selected.y === moveTo.y){
                 if(!posInSpecialSquare(moveTo) || isKing(selected))
                     return nothingBetween(selected, moveTo);
@@ -348,7 +347,7 @@ window.onload = function(){
                 }
             }
         }
-
+        // position -> square position
         function posToSquarePos(clickPos){
             for(var i = 0; i < 11; i++){
                 for(var j = 0; j < 11; j++){
