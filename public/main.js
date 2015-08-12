@@ -147,7 +147,7 @@ window.onload = function(){
 
         function showValidMoves(){
           if(validMoves.length){
-            drawArray(validMoves, '#452945', 'circle');
+            drawArray(validMoves, '#cdc5ff', 'circle');
             validMoves = [];
           }else{
             return;
@@ -454,7 +454,6 @@ window.onload = function(){
         }
 
         function addEvents(){
-
             canvas.addEventListener("click", getPosition, false);
             // resize the canvas to fill browser window dynamically
             window.addEventListener('resize', resizeCanvas, false);
