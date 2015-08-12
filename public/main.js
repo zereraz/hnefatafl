@@ -313,6 +313,23 @@ window.onload = function(){
             }
         }
 
+        function edgeCount(square){
+          var edgeCount = 0;
+          if(square.x === 0){
+              edgeCount+=1;
+          }
+          if(square.x === 10){
+              edgeCount+=1;
+          }
+          if(square.y === 10){
+              edgeCount+=1;
+          }
+          if(square.y === 0){
+              edgeCount+=1;
+          }
+          return edgeCount;
+        }
+
         function surroundingSwords(square){
           var surroundingEnemy = 0;
           if(getRole({x:square.x+1, y:square.y}) === 'swords'){
@@ -365,7 +382,7 @@ window.onload = function(){
                   removeSquare(square, currentRole);
                 }
             }else if(currentRole === 'fist'){
-                
+
                 return;
             }
         }
@@ -426,10 +443,12 @@ window.onload = function(){
         function allMoves(square){
           for(var i = 0; i < 11; i++){
             if(square.x !== i){
-              validMoves.push({x:i, y:square.y});
+              if(!posInSpecialSquare({x:i, y:square.y}))
+                validMoves.push({x:i, y:square.y});
             }
             if(square.y !== i){
-              validMoves.push({x:square.x, y:i});
+              if(!posInSpecialSquare({x:square.x, y:i}))
+                validMoves.push({x:square.x, y:i});
             }
           }
         }
