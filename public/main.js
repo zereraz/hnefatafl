@@ -459,7 +459,21 @@ window.onload = function(){
             window.addEventListener('resize', resizeCanvas, false);
         }
 
+        function init(){
+
+          // connect socket
+          updateStatus('Connecting ...');
+          // show modal, select side
+          // change background color depending on whose turn it is
+          //
+        }
+
+        function updateStatus(status){
+          document.getElementById('status').innerText = status;
+        }
+
         addEvents();
+        init();
         // function to find the square based on x,y of click
         // highlight allowed moves with #c3fd53
 };

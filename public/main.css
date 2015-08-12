@@ -3,9 +3,14 @@ canvas{
 	display: block;
 	margin:  auto;
 	height:100%;
+	text-align: center;
 }
 html,body{
 	margin: 0px;
 	padding: 0px;
 	overflow: hidden;
+}
+#status{
+	position: absolute;
+	top: 0px;
 }

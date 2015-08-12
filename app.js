@@ -4,6 +4,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var level = require('levelup');
 var db = level('./databaseDirectory');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var port = process.env.PORT || 3000;
@@ -16,6 +17,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 app.use(session({ secret: 'random c0okie s3cret', resave:false, cookie: { maxAge: 60000 }}));
+app.use(compression());
+
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
 

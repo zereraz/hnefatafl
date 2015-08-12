@@ -8,9 +8,11 @@
 
 ## Interesting ideas
  - may not be optimized but in the current version there is no 11x11 matrix, only thing that is being tracked are pieces nothing about white space
+ - using leveldb as database
 
 ## future changes
  - maybe for some optimizations a global board state with white spaces
+ - try rxjs
 
 ## Todo
  - king killed by 4 pieces
