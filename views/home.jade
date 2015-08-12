@@ -1,10 +1,9 @@
 extends index
 block content
-  .col-md-9
-    form(action="/create-room", method="POST", class="form-horizontal")
-      .col-md-5
-        input(type="text", class="form-control", name="room-name", placeholder="Room name" required)
-        br
-        input(type="password", class="form-control", name="password", placeholder="Room password" required)
-        br
-        input(type="submit", class="btn btn-primary", value="Create Room")
+  form(action="/create-room", method="POST", class="form-horizontal")
+    .col-md-5
+      input(type="text", class="form-control", name="room-name", placeholder="Room name" required)
+      br
+      input(type="password", class="form-control", name="password", placeholder="Room password" required)
+      br
+      input(type="submit", class="btn btn-primary", value="Create Room")

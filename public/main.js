@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  "use strict";
   // Globals
   // Board
       var globalState = getInitGlobalState();
@@ -7,9 +8,10 @@ $(document).ready(function(){
       var selectedSquare = null,
           moveToSquare = null,
           validMoves = [],
-          turn,
+          turn = false,
           selectedColor = "#4e4e56";
 
+      var socket;
       // chief/king is fist
       // shield are one's protecting king
       // swords are those trying to capture king
@@ -473,11 +475,18 @@ $(document).ready(function(){
         rulesDialog();
       }
 
+      function getRoom(){
+        var path = window.location.pathname.split('/');
+        return path[path.length-1];
+      }
+
       function init(){
 
         vex.defaultOptions.className = 'vex-theme-flat-attack';
         initDialogs();
         // connect socket
+        socket = io();
+        socket.emit('my-room',{'rooom':getRoom()});
         updateStatus('Connecting ...');
         // show modal, select side
         // change background color depending on whose turn it is
@@ -490,7 +499,12 @@ $(document).ready(function(){
 
       addEvents();
       init();
-      // function to find the square based on x,y of click
       // highlight allowed moves with #c3fd53
 
+      socket.on('connection', function(){
+          updateStatus('Connected!');
+      });
+      socket.on('room-joint', function(){
+        updateStatus('room joint!');
+      });
 });

@@ -28,21 +28,26 @@ app.get('/', function(req, res){
 
 
 app.get('/room/:name', function(req, res){
-	db.get(req.params.name, function(err, data){
-		if(!err){
-			if(data){
-				if(req.session.pass === data){
-					res.render('room',{"name":req.params.name, "confirm":true});
+	if(req.session.room === req.params.name){
+		db.get(req.params.name, function(err, data){
+			if(!err){
+				if(data){
+					if(req.session.pass === data){
+						res.render('room',{"name":req.params.name, "confirm":true});
+					}else{
+						res.render('room', {"name":req.params.name, "confirm":false});
+					}
 				}else{
-					res.render('room', {"name":req.params.name, "confirm":false});
+					res.send("Room does not exist");
 				}
 			}else{
-				res.send("Room does not exist");
+				res.redirect('/');
 			}
-		}else{
-			res.redirect('/');
-		}
-	});
+		});
+	}else{
+		// leave room/logout only then can u make a new room
+		res.redirect('/room/'+req.session.room);
+	}
 });
 
 app.post('/room/:name', function(req, res){
@@ -58,12 +63,13 @@ app.post('/room/:name', function(req, res){
 
 app.post('/create-room', function(req, res){
 	var roomName = req.body['room-name'];
-	req.session.pass = req.body.password;
 	db.get(roomName, function(err, data){
 		// room does not exist
 		if(err){
 			db.put(roomName, req.body.password, function(err){
 				if(!err){
+						req.session.pass = req.body.password;
+						req.session.room = roomName;
 						res.redirect('/room/' + roomName);
 				}else{
 					res.send(err);
@@ -74,5 +80,19 @@ app.post('/create-room', function(req, res){
 		}
 	});
 });
+
+
+io.on('connection', function(socket){
+  var room;
+	socket.on('my-room', function(data){
+		room = data.room;
+		socket.join(room);
+		io.to(room).emit('room-joint');
+	});
+	socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+});
+
 
 server.listen(port);
