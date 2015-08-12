@@ -14,3 +14,10 @@ html,body{
 	position: absolute;
 	top: 0px;
 }
+.title{
+	color:#990000;
+}
+
+#container{
+	margin-top: 100px;
+}

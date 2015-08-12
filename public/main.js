@@ -459,9 +459,24 @@ $(document).ready(function(){
           window.addEventListener('resize', resizeCanvas, false);
       }
 
+      function selectSideDialog(){
+        vex.dialog.open({message:"Select Side!"});
+      }
+
+      function rulesDialog(){
+        vex.dialog.open({message:"Rules here"});
+      }
+
+
+      function initDialogs(){
+        selectSideDialog();
+        rulesDialog();
+      }
+
       function init(){
 
         vex.defaultOptions.className = 'vex-theme-flat-attack';
+        initDialogs();
         // connect socket
         updateStatus('Connecting ...');
         // show modal, select side
@@ -470,7 +485,6 @@ $(document).ready(function(){
       }
 
       function updateStatus(status){
-        vex.dialog.open({message:"hello world"});
         document.getElementById('status').innerText = status;
       }
 

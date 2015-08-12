@@ -30,13 +30,17 @@ app.get('/', function(req, res){
 app.get('/room/:name', function(req, res){
 	db.get(req.params.name, function(err, data){
 		if(!err){
-			if(req.session.pass === data){
-				res.render('room',{"name":req.params.name, "confirm":true});
+			if(data){
+				if(req.session.pass === data){
+					res.render('room',{"name":req.params.name, "confirm":true});
+				}else{
+					res.render('room', {"name":req.params.name, "confirm":false});
+				}
 			}else{
-				res.render('room', {"name":req.params.name, "confirm":false});
+				res.send("Room does not exist");
 			}
 		}else{
-			res.send(err);
+			res.redirect('/');
 		}
 	});
 });
