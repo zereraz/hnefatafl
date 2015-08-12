@@ -10,6 +10,7 @@ var session = require('express-session');
 var port = process.env.PORT || 3000;
 
 
+app.use(compression());
 // middleware
 app.use(express.static(__dirname + '/public'));
 // parse application/x-www-form-urlencoded
@@ -17,7 +18,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 app.use(session({ secret: 'random c0okie s3cret', resave:false, cookie: { maxAge: 60000 }}));
-app.use(compression());
 
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/views');
