@@ -71,8 +71,8 @@ window.onload = function(){
 
         function render() {
             clearRect();
-            setupBoard();
             checkGameConditions();
+            setupBoard();
         }
 
         function checkGameConditions() {
@@ -312,19 +312,60 @@ window.onload = function(){
                 }
             }
         }
-        // please refactor
+
+        function surroundingSwords(square){
+          var surroundingEnemy = 0;
+          if(getRole({x:square.x+1, y:square.y}) === 'swords'){
+            surroundingEnemy +=1;
+          }
+          if(getRole({x:square.x-1, y:square.y}) === 'swords'){
+            surroundingEnemy +=1;
+          }
+          if(getRole({x:square.x, y:square.y+1}) === 'swords'){
+            surroundingEnemy +=1;
+          }
+          if(getRole({x:square.x, y:square.y-1}) === 'swords'){
+            surroundingEnemy +=1;
+          }
+          return surroundingEnemy;
+        }
+
+        function surroundingShields(square){
+          var surroundingEnemy = 0;
+          if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1){
+            surroundingEnemy +=1;
+          }
+          if(['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1){
+            surroundingEnemy +=1;
+          }
+          if(['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1){
+            surroundingEnemy +=1;
+          }
+          if(['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
+            surroundingEnemy +=1;
+          }
+          return surroundingEnemy;
+        }
+
+        // please refactor!!!
         function checkPlayerDeath(square){
             var currentRole = getRole(square);
-            if(currentRole === 'shield' || currentRole === 'fist'){
-                if(getRole({x:square.x+1, y:square.y}) === 'swords' && getRole({x:square.x-1, y:square.y}) === 'swords' || getRole({x:square.x, y:square.y+1}) === 'swords' && getRole({x:square.x, y:square.y-1}) === 'swords'){
-                    removeSquare(square, currentRole);
+            if(currentRole === 'shield'){
+                // if(getRole({x:square.x+1, y:square.y}) === 'swords' && getRole({x:square.x-1, y:square.y}) === 'swords' || getRole({x:square.x, y:square.y+1}) === 'swords' && getRole({x:square.x, y:square.y-1}) === 'swords'){
+                //     removeSquare(square, currentRole);
+                // }
+                if(surroundingSwords(square) >=2){
+                  removeSquare(square, currentRole);
                 }
             }else if(currentRole === 'swords'){
-                if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1 &&  ['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1 || ['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1 && ['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
-                    removeSquare(square, currentRole);
+                // if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1 &&  ['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1 || ['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1 && ['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
+                //     removeSquare(square, currentRole);
+                // }
+                if(surroundingShields(square) >=2){
+                  removeSquare(square, currentRole);
                 }
-            }else{
-                // empty
+            }else if(currentRole === 'fist'){
+                
                 return;
             }
         }

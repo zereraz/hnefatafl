@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var level = require('levelup');
 var db = level('./databaseDirectory');
 var bodyParser = require('body-parser');
@@ -59,4 +61,4 @@ app.post('/create-room', function(req, res){
 	});
 });
 
-app.listen(port);
+server.listen(port);
