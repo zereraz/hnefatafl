@@ -1,0 +1,16 @@
+doctype html
+html(lang="en")
+  head
+    title tafl
+    link(href="/main.css")
+    if confirm
+      script(type="text/javascript", src="/main.js")
+  body
+    if message
+      h1 #{message}
+    if confirm
+      block content
+    else
+      form(action="/room/#{name}", method="POST")
+        input(type="password", name="password" placeholder="Enter room password")
+        input(type="submit", value="Enter Room")

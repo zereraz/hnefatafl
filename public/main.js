@@ -7,6 +7,7 @@ window.onload = function(){
         var selectedSquare = null,
             moveToSquare = null,
             validMoves = [],
+            turn,
             selectedColor = "#4e4e56";
 
         // chief/king is fist
@@ -379,7 +380,8 @@ window.onload = function(){
           ctx.fillStyle = c;
           ctx.fill();
         }
-
+        // this shows all moves, need to shrink it depending on position
+        // now it is showing moves that cannot be played due to blocking of other players
         function allMoves(square){
           for(var i = 0; i < 11; i++){
             if(square.x !== i){

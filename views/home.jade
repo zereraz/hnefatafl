@@ -1,0 +1,6 @@
+extends index
+block content
+  form(action="/create-room", method="POST")
+    input(type="text", name="room-name", placeholder="Room name" required)
+    input(type="password", name="password", placeholder="Room password" required)
+    input(type="submit", value="Create Room")

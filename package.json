@@ -4,7 +4,12 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "express": "~4.13.3"
+    "express": "~4.13.3",
+    "jade": "~1.11.0",
+    "body-parser": "~1.13.3",
+    "levelup": "~1.2.1",
+    "leveldown": "~1.4.0",
+    "express-session": "~1.11.3"
   },
   "devDependencies": {},
   "scripts": {
