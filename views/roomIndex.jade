@@ -14,7 +14,9 @@ html(lang="en")
   body
     h3(id="status")
     if message
-      h1 #{message}
+      .alert.alert-dismissible.alert-danger
+        button(type="button" class="close" data-dismiss="alert") x
+        strong #{message}
     if confirm
       block content
     else

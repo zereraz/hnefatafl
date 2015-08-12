@@ -59,11 +59,18 @@ app.post('/room/:name', function(req, res){
 app.post('/create-room', function(req, res){
 	var roomName = req.body['room-name'];
 	req.session.pass = req.body.password;
-	db.put(roomName, req.body.password, function(err){
-		if(!err){
-				res.redirect('/room/' + roomName);
+	db.get(roomName, function(err, data){
+		// room does not exist
+		if(err){
+			db.put(roomName, req.body.password, function(err){
+				if(!err){
+						res.redirect('/room/' + roomName);
+				}else{
+					res.send(err);
+				}
+			});
 		}else{
-			res.send(err);
+			res.render('home', {"message":"Room already exists!"});
 		}
 	});
 });
