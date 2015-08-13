@@ -173,7 +173,8 @@ $(document).ready(function(){
           }else{
               // move that square
               if(moveToSquare = posToSquarePos(pos)){
-                  if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
+                  if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){              
+                      socket.emit('move', {'from':selectedSquare, 'to':moveToSquare,'room':getRoom()});
                       findAndReplace(selectedSquare, moveToSquare);
                       selectedSquare = null;
                       render();
@@ -280,6 +281,7 @@ $(document).ready(function(){
                   }
               }
           }
+          render();
       }
 
       function find(x, y){
@@ -483,10 +485,10 @@ $(document).ready(function(){
       function init(){
 
         vex.defaultOptions.className = 'vex-theme-flat-attack';
-        initDialogs();
+        // initDialogs();
         // connect socket
         socket = io();
-        socket.emit('my-room',{'rooom':getRoom()});
+        socket.emit('my-room',{'room':getRoom()});
         updateStatus('Connecting ...');
         // show modal, select side
         // change background color depending on whose turn it is
@@ -502,9 +504,15 @@ $(document).ready(function(){
       // highlight allowed moves with #c3fd53
 
       socket.on('connection', function(){
-          updateStatus('Connected!');
+        updateStatus('Connected!');
       });
       socket.on('room-joint', function(){
         updateStatus('room joint!');
+      });
+      socket.on('move', function(data){
+        findAndReplace(data.from, data.to);
+      });
+      socket.on('render', function(){
+        render();
       });
 });
