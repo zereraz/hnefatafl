@@ -9,6 +9,8 @@ $(document).ready(function(){
           moveToSquare = null,
           validMoves = [],
           turn = false,
+          master = false,
+          iAm = null,
           selectedColor = "#4e4e56";
 
       var socket;
@@ -59,7 +61,7 @@ $(document).ready(function(){
       var canvas = document.getElementById('canvas'),
           ctx = canvas.getContext('2d'),
           canvasW,
-          canvasH ;
+          canvasH;
 
 
       function resizeCanvas() {
@@ -173,10 +175,9 @@ $(document).ready(function(){
           }else{
               // move that square
               if(moveToSquare = posToSquarePos(pos)){
-                  if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){              
+                  if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
                       socket.emit('move', {'from':selectedSquare, 'to':moveToSquare,'room':getRoom()});
                       findAndReplace(selectedSquare, moveToSquare);
-                      selectedSquare = null;
                       render();
                   }else if(posToSquare(pos)){
                         selectedSquare = moveToSquare;
@@ -204,12 +205,16 @@ $(document).ready(function(){
       }
 
       function isValidMove(selected, moveTo){
+        if(turn && getRole(selected)===iAm){
           if(selected.x === moveTo.x || selected.y === moveTo.y){
               if(!posInSpecialSquare(moveTo) || isKing(selected))
                   return nothingBetween(selected, moveTo);
           }else{
               return false;
           }
+        }else{
+          return false;
+        }
       }
 
       function isKing(square){
@@ -273,6 +278,7 @@ $(document).ready(function(){
 
       //use the find function here
       function findAndReplace(square, newSquare){
+          turn = false;
           for(var key in objectMap){
               var arr = objectMap[key].pos;
               for(var pos in arr){
@@ -281,6 +287,7 @@ $(document).ready(function(){
                   }
               }
           }
+          selectedSquare = null;
           render();
       }
 
@@ -394,6 +401,10 @@ $(document).ready(function(){
       function checkGameOver(){
         // check if king is at corner
         var king = objectMap.fist.pos[0];
+        if(surroundingSwords(king) + edgeCount(king) === 4){
+          alert('game over, king captured');
+          return true;
+        }
         if(isInCorner(king)){
           alert('Game over');
           return true;
@@ -482,14 +493,20 @@ $(document).ready(function(){
         return path[path.length-1];
       }
 
+      function setIAm(){
+        iAm = "shield";
+        socket.emit('setIAm',{'iAm': 'swords', 'room':getRoom()});
+      }
+
       function init(){
 
         vex.defaultOptions.className = 'vex-theme-flat-attack';
-        // initDialogs();
+        initDialogs();
         // connect socket
         socket = io();
         socket.emit('my-room',{'room':getRoom()});
         updateStatus('Connecting ...');
+
         // show modal, select side
         // change background color depending on whose turn it is
         //
@@ -505,14 +522,24 @@ $(document).ready(function(){
 
       socket.on('connection', function(){
         updateStatus('Connected!');
+        canMove = true;
       });
       socket.on('room-joint', function(){
         updateStatus('room joint!');
+        setIAm();
       });
       socket.on('move', function(data){
         findAndReplace(data.from, data.to);
+        turn = true;
       });
       socket.on('render', function(){
         render();
       });
+      socket.on('setIAm', function(data){
+        iAm = data.iAm;
+        if(data.iAm === "shield"){
+          turn = true;
+        }
+      });
+      // make a generic send function that adds room to each emit
 });

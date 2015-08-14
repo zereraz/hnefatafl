@@ -24,3 +24,19 @@
 - AI
 - hover hightlight
 - suggestions including different color for capturing
+- start new game
+
+## Events
+ - client ==> server ==> other client , client ==> server <== other client, client <==> server <==> other client
+ - connection ==> server
+ - my-room ==> server
+
+## Databse Todo
+ - add count of players to each room 0,1,2 after its created
+ - reduce count on disconnect
+ - state of game, if after disconnect player reconnects sync happens
+ - for the state an array can be used where move objects are put and resent to rejoint player
+ - keep score in same room
+
+## petty todo
+ - either swords or sword
