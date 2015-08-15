@@ -55,6 +55,10 @@ app.post('/room/:name', function(req, res){
 		});
 });
 
+app.get('/create-room', function(req, res){
+	res.redirect('/');
+});
+
 app.post('/create-room', function(req, res){
 	var roomName = req.body['room-name'];
 	db.get(roomName, function(err, data){
@@ -81,8 +85,8 @@ io.on('connection', function(socket){
 	socket.on('my-room', function(data){
 		socket.join(data.room);
 
-		// socket.broadcast.to(data.room).emit('room-joint', data);
-		io.to(data.room).emit('room-joint');
+		socket.broadcast.to(data.room).emit('room-joint', data);
+		// io.to(data.room).emit('room-joint');
 	});
 
 	socket.on('move', function(data){
