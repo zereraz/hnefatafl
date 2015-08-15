@@ -65,8 +65,14 @@ $(document).ready(function(){
 
 
       function resizeCanvas() {
-          canvasW = window.innerHeight;
-          canvasH = window.innerHeight;
+          var size = 0;
+          if(window.innerHeight < window.innerWidth){
+            size = window.innerHeight;
+          }else{
+            size = window.innerWidth;
+          }
+          canvasW = size;
+          canvasH = size;
           canvas.width = canvasW;
           canvas.height = canvasH;
           render();
