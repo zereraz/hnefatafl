@@ -166,7 +166,7 @@ $(document).ready(function(){
           pos.y = (event.y || event.clientY) - canvas.offsetTop;
           if(!selectedSquare){
               if(selectedSquare = posToSquare(pos)){
-                  allMoves(selectedSquare);
+                  //allMoves(selectedSquare);
                   render();
               }else{
                   // do nothing, empty square
@@ -181,7 +181,7 @@ $(document).ready(function(){
                       render();
                   }else if(posToSquare(pos)){
                         selectedSquare = moveToSquare;
-                        allMoves(selectedSquare);
+                        //allMoves(selectedSquare);
                         render();
                   }
               }else{
