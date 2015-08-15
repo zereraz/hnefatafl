@@ -4,8 +4,11 @@ html(lang="en")
     meta(name="viewport", content="width=device-width, initial-scale=1")
     title tafl
     link(type="text/css", rel="stylesheet", href="/main.css")
+    link(type="text/css", rel="stylesheet", href="/bootstrap.min.css")
+    link(type="text/css", rel="stylesheet", href="/main.css")
+    script(src="/jquery.min.js")
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js")
     if confirm
-      script(src="/jquery.min.js")
       script(src="/vex.combined.min.js")
       link(type="text/css", rel="stylesheet", href="/vex.css")
       link(type="text/css", rel="stylesheet", href="/vex-theme-flat-attack.css")
@@ -20,6 +23,9 @@ html(lang="en")
     if confirm
       block content
     else
-      form(action="/room/#{name}", method="POST")
-        input(type="password", name="password" placeholder="Enter room password")
-        input(type="submit", value="Enter Room")
+      .container-fluid
+      .col-md-3
+      .col-md-5.confirm
+        form(action="/room/#{name}", method="POST")
+          input(type="password", class="form-control", name="password" placeholder="Enter room password")
+          input(type="submit", class="btn btn-primary", value="Enter Room")

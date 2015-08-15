@@ -204,7 +204,7 @@ $(document).ready(function(){
           return 'empty';
       }
 
-      function isValidMove(selected, moveTo){
+      function isValidMove(selected, moveTo){        
         if(turn && getRole(selected)===iAm){
           if(selected.x === moveTo.x || selected.y === moveTo.y){
               if(!posInSpecialSquare(moveTo) || isKing(selected))
@@ -484,7 +484,7 @@ $(document).ready(function(){
 
 
       function initDialogs(){
-        selectSideDialog();
+        //selectSideDialog();
         rulesDialog();
       }
 
@@ -495,6 +495,7 @@ $(document).ready(function(){
 
       function setIAm(){
         iAm = "shield";
+        turn = true;
         socket.emit('setIAm',{'iAm': 'swords', 'room':getRoom()});
       }
 
@@ -537,8 +538,8 @@ $(document).ready(function(){
       });
       socket.on('setIAm', function(data){
         iAm = data.iAm;
-        if(data.iAm === "shield"){
-          turn = true;
+        if(iAm === "swords"){
+          turn = false;
         }
       });
       // make a generic send function that adds room to each emit
