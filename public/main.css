@@ -1,4 +1,8 @@
-canvas{
+#you, #turn{
+	position: absolute;
+	right: 0px;
+}
+#canvas{
 	border:2px solid black;
 	display: block;
 	margin:  auto;

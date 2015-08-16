@@ -172,7 +172,7 @@ $(document).ready(function(){
           pos.y = (event.y || event.clientY) - canvas.offsetTop;
           if(!selectedSquare){
               if(selectedSquare = posToSquare(pos)){
-                  //allMoves(selectedSquare);
+                  allMoves(selectedSquare);
                   render();
               }else{
                   // do nothing, empty square
@@ -187,7 +187,7 @@ $(document).ready(function(){
                       render();
                   }else if(posToSquare(pos)){
                         selectedSquare = moveToSquare;
-                        //allMoves(selectedSquare);
+                        allMoves(selectedSquare);
                         render();
                   }
               }else{
@@ -285,6 +285,7 @@ $(document).ready(function(){
       //use the find function here
       function findAndReplace(square, newSquare){
           turn = false;
+          updateStatus("Opponents turn!");
           for(var key in objectMap){
               var arr = objectMap[key].pos;
               for(var pos in arr){
@@ -512,7 +513,7 @@ $(document).ready(function(){
         // connect socket
         socket = io();
         socket.emit('my-room',{'room':getRoom()});
-        updateStatus('Connecting ...');
+        updateStatus('Waiting for opponent');
 
         // show modal, select side
         // change background color depending on whose turn it is
@@ -538,6 +539,7 @@ $(document).ready(function(){
       socket.on('move', function(data){
         findAndReplace(data.from, data.to);
         turn = true;
+        updateStatus("Your turn "+iAm +" !");
       });
       socket.on('render', function(){
         render();
@@ -546,6 +548,7 @@ $(document).ready(function(){
         iAm = data.iAm;
         if(iAm === "shield"){
           turn = true;
+          updateStatus("Your turn "+iAm +" !");
         }
       });
       // make a generic send function that adds room to each emit
