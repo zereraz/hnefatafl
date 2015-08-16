@@ -11,23 +11,22 @@
 
 ## Interesting ideas
  - may not be optimized but in the current version there is no 11x11 matrix, only thing that is being tracked are pieces nothing about white space
- - using leveldb as database
+ - using leveldb as database, even for future autentication
 
 ## future changes
  - maybe for some optimizations a global board state with white spaces
  - try rxjs
 
 ## Todo
- - king killed by 4 pieces
  - control panel
-    - hints checkbox
+    - suggestions checkbox
     - versions of game like different board
 - rules
-- suggestions
-- AI
+- AI(single player mode)
 - hover hightlight
 - suggestions including different color for capturing
 - start new game
+- save game state
 
 ## Events
  - client ==> server ==> other client , client ==> server <== other client, client <==> server <==> other client
@@ -42,4 +41,5 @@
  - keep score in same room
 
 ## petty todo
- - either swords or sword
+ - decide either swords or sword
+ - turn wise coloring or cursor change

@@ -178,8 +178,9 @@ $(document).ready(function(){
       // bad code, refactor please!
       function getPosition(event){
           var pos = {};
-          pos.x = (event.x || event.clientX) - canvas.offsetLeft;
-          pos.y = (event.y || event.clientY) - canvas.offsetTop;
+          pos.x = event.layerX - canvas.offsetLeft|| event.clientX - canvas.offsetLeft;
+          pos.y = event.layerY - canvas.offsetTop || event.clientY - canvas.offsetTop;
+          console.log(event.x,event.layerX-canvas.offsetLeft);
           if(!selectedSquare){
               if(selectedSquare = posToSquare(pos)){
                   allMoves(selectedSquare);
@@ -531,7 +532,8 @@ $(document).ready(function(){
       }
 
       function updateStatus(status){
-        document.getElementById('status').innerText = status;
+        console.log(status);
+        // document.getElementsByClassName('panel-body').innerHTML = status;
       }
 
       addEvents();
