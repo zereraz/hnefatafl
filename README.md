@@ -1,5 +1,8 @@
 ## Viking board game
 
+# play
+  [tafl](http://tafl.herokuapp.com)
+
 ## Rules
  - can move horizontally or vertically as many steps
  - get the king(piece at center) to any one of the corner

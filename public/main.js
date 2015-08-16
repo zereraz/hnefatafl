@@ -149,10 +149,20 @@ $(document).ready(function(){
       }
 
       function setupBoard(){
+          turnBackground("#eee");
           drawGrid();
           drawBoard();
           showValidMoves();
           addPlayers();
+      }
+
+      function turnBackground(c){
+        if(!turn){
+          ctx.fillStyle = c;
+        }else{
+          ctx.fillStyle = "#fff";
+        }
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       function showValidMoves(){
@@ -530,7 +540,6 @@ $(document).ready(function(){
 
       socket.on('connection', function(){
         updateStatus('Connected!');
-        canMove = true;
       });
       socket.on('room-joint', function(){
         updateStatus('room joint!');
