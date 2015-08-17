@@ -74,7 +74,13 @@ app.post('/create-room', function(req, res){
 				}
 			});
 		}else{
-			res.render('home', {"message":"Room already exists!"});
+			if(data === req.body.password){
+				req.session.pass = req.body.password;
+				req.session.room = roomName;
+				res.redirect('/room/' + roomName);
+			}else{
+					res.render('home', {"message":"Room already exists!"});
+			}
 		}
 	});
 });
