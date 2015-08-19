@@ -90,7 +90,6 @@ io.on('connection', function(socket){
 	console.log('user connected');
 	socket.on('my-room', function(data){
 		socket.join(data.room);
-
 		socket.broadcast.to(data.room).emit('room-joint', data);
 		// io.to(data.room).emit('room-joint');
 	});

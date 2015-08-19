@@ -149,7 +149,7 @@ $(document).ready(function(){
       }
 
       function setupBoard(){
-          turnBackground("#eee");
+          //turnBackground("#eee");
           drawGrid();
           drawBoard();
           showValidMoves();
@@ -525,15 +525,46 @@ $(document).ready(function(){
         socket = io();
         socket.emit('my-room',{'room':getRoom()});
         updateStatus('Waiting for opponent');
-
+        chooseSide();
         // show modal, select side
         // change background color depending on whose turn it is
         //
       }
 
       function updateStatus(status){
-        console.log(status);
+        var color = "";
+        if(iAm === "shield" && turn){
+            color = objectMap.shield.color;
+        }
+        if(iAm === "swords" && turn){
+          color = objectMap.swords.color;
+        }
+        var $status = $('#status');
+        $status.html("<h5 style=\"color:"+color+"\" >"+status+"</h5>");
         // document.getElementsByClassName('panel-body').innerHTML = status;
+      }
+
+      function chooseSide(){
+
+        vex.dialog.open({
+          message: 'Select side:',
+          buttons: [
+            $.extend({}, vex.dialog.buttons.YES, {
+              text: 'Attacker'
+            }), $.extend({}, vex.dialog.buttons.NO, {
+              text: 'Defender'
+            })
+          ],
+          callback: function(data) {
+            if (data === false) {
+              return console.log(data);
+            }else{
+              return console.log(data);
+            }
+            //return console.log('Username', data.username, 'Password', data.password);
+          }
+        });
+
       }
 
       addEvents();
@@ -542,8 +573,10 @@ $(document).ready(function(){
 
       socket.on('connection', function(){
         updateStatus('Connected!');
+
       });
       socket.on('room-joint', function(){
+        // fix bug here, semd to person who sent room
         updateStatus('room joint!');
         setIAm();
       });

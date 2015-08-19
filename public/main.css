@@ -29,3 +29,6 @@ html,body{
 .submitBtn{
 	margin: 5px;
 }
+#status{
+	display:block;
+}

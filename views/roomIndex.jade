@@ -20,7 +20,8 @@ html(lang="en")
         button(type="button" class="close" data-dismiss="alert") x
         strong #{message}
     if confirm
-      block content
+      .container-fluid
+        block content
     else
       .container-fluid
       .col-md-3

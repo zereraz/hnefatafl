@@ -1,13 +1,18 @@
 extends roomIndex
 block content
-  .col-md-3
-    .panel.panel-primary
-      .panel-heading
-        h3.panel-title Status
-      .panel-body
-       | Test
-  .col-md-6
-    canvas(id="canvas")
-  .col-md-3
-    h1 rest of it
-    #taunts
+  .row
+    .col-md-3
+      .row
+        .panel.panel-primary
+          .panel-body(id="status")
+          br
+      .row      
+        .panel.panel-primary
+          .panel-heading Moves
+          .panel-body(id="moves")
+          
+    .col-md-6
+      canvas(id="canvas")
+    .col-md-3
+      h1 rest of it
+      #taunts
