@@ -519,7 +519,7 @@ $(document).ready(function(){
 
       function init(){
 
-        vex.defaultOptions.className = 'vex-theme-flat-attack';
+        vex.defaultOptions.className = 'vex-theme-wireframe';
         initDialogs();
         // connect socket
         socket = io();
@@ -540,7 +540,7 @@ $(document).ready(function(){
           color = objectMap.swords.color;
         }
         var $status = $('#status');
-        $status.html("<h5 style=\"color:"+color+"\" >"+status+"</h5>");
+        // $status.html("<h5 style=\"color:"+color+"\" >"+status+"</h5>");
         // document.getElementsByClassName('panel-body').innerHTML = status;
       }
 
