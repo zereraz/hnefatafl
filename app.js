@@ -3,7 +3,7 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var level = require('levelup');
-var db = level('./databaseDirectory');
+var db = level('./databaseDirectory', { valueEncoding: 'json' });
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -34,8 +34,7 @@ app.get('/room/:name', function(req, res){
 						res.render('/', {"message":"Room does not exist!"});
 					}
 				}else{
-
-					if(req.session.pass === data){
+					if(req.session.pass === data.pass){
 						res.render('room',{"name":req.params.name, "confirm":true});
 					}else{
 						res.render('room', {"name":req.params.name, "confirm":false});
@@ -46,8 +45,8 @@ app.get('/room/:name', function(req, res){
 
 app.post('/room/:name', function(req, res){
 		db.get(req.params.name, function(err, data){
-			if(req.body.password === data){
-				req.session.pass = data;
+			if(req.body.password === data.pass){
+				req.session.pass = data.pass;
 				res.render('room',{"name":req.params.name, "confirm":true});
 			}else{
 				res.render('room', {"name":req.params.name, "message":"wrong password!", "confirm":false});
@@ -64,7 +63,13 @@ app.post('/create-room', function(req, res){
 	db.get(roomName, function(err, data){
 		// room does not exist
 		if(err){
-			db.put(roomName, req.body.password, function(err){
+            var value = {
+                'pass': req.body.password,
+                'count': 1,
+                'gameCount': 0,
+                'moves': []
+            }
+			db.put(roomName, value, function(err){
 				if(!err){
 						req.session.pass = req.body.password;
 						req.session.room = roomName;
@@ -74,7 +79,7 @@ app.post('/create-room', function(req, res){
 				}
 			});
 		}else{
-			if(data === req.body.password){
+			if(data.pass === req.body.password){
 				req.session.pass = req.body.password;
 				req.session.room = roomName;
 				res.redirect('/room/' + roomName);
