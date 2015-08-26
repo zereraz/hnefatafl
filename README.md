@@ -12,6 +12,8 @@
 ## Interesting ideas
  - may not be optimized but in the current version there is no 11x11 matrix, only thing that is being tracked are pieces nothing about white space
  - using leveldb as database, even for future autentication
+ - first time thought of using a logger function that prints of all global variables, like a debugger
+ - todo markdown file for each project, helps me think
 
 ## future changes
  - maybe for some optimizations a global board state with white spaces

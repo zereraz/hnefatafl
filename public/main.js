@@ -11,6 +11,7 @@ $(document).ready(function(){
           turn = false,
           master = false,
           iAm = null,
+          spectator = false,
           selectedColor = "#4e4e56";
 
       var socket;
@@ -61,20 +62,40 @@ $(document).ready(function(){
       function globalStateLogger(all){
         // log all
           if(all){
-            console.log("global : ");console.log( globalState);
-            console.log("objectMap :");console.log( objectMap);
-            console.log("specialSquares :");console.log( specialSquares);
-            console.log("selectedSquare :");console.log( selectedSquare);
-            console.log("moveToSquare :");console.log( moveToSquare); 
-            console.log("validMoves :");console.log( validMoves);
-            console.log("master ");console.log( master);
-            console.log("turn ");console.log( turn);
-            console.log("iAm ");console.log( iAm);
+            console.log("global : ");
+            console.log(globalState);
+            console.log("objectMap :");
+            console.log(objectMap);
+            console.log("specialSquares :");
+            console.log(specialSquares);
+            console.log("selectedSquare :");
+            console.log(selectedSquare);
+            console.log("moveToSquare :");
+            console.log(moveToSquare); 
+            console.log("validMoves :");
+            console.log(validMoves);
+            console.log("master ");
+            console.log(master);
+            console.log("turn ");
+            console.log(turn);
+            console.log("iAm ");
+            console.log(iAm);
+            console.log("master: ");
+            console.log(master);
+            console.log("speactator :");
+            console.log(spectator);
           }else{
             // partial
-            console.log("selectedSquare :");console.log( selectedSquare);
-            console.log("turn ");console.log( turn);
-            console.log("iAm ");console.log( iAm);
+            console.log("selectedSquare :");
+            console.log(selectedSquare);
+            console.log("turn ");
+            console.log(turn);
+            console.log("iAm ");
+            console.log(iAm);
+            console.log("master: ");
+            console.log(master);
+            console.log("speactator :");
+            console.log(spectator);
           }
 
       }
@@ -244,7 +265,7 @@ $(document).ready(function(){
       }
 
       function isValidMove(selected, moveTo){
-        if(turn && getRole(selected)===iAm){
+        if(turn && getRole(selected)===iAm && !speactator){
           if(selected.x === moveTo.x || selected.y === moveTo.y){
               if(!posInSpecialSquare(moveTo) || isKing(selected))
                   return nothingBetween(selected, moveTo);
@@ -617,5 +638,14 @@ $(document).ready(function(){
           updateStatus("Your turn "+iAm +" !");
         }
       });
+      socket.on('master', function(){
+        master = true;
+        console.log("master");
+      });
+      socket.on('spectator', function(){
+        spectator = true;
+        console.log("spec");
+      });
+
       // make a generic send function that adds room to each emit
 });

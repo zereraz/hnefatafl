@@ -104,6 +104,12 @@ io.on('connection', function(socket){
             if(!err){
                 socket.join(data.room);
                 roomData.count+=1;
+                if(roomData.count == 1){
+                    socket.emit('master');
+                }else if(roomData.count > 2){
+                    socket.emit('spectator');
+                }                    
+
                 console.log("key : "+data.room);
                 db.put(data.room, roomData, function(err){
                     if(!err){                    
@@ -125,6 +131,7 @@ io.on('connection', function(socket){
         db.get(data.room, function(err, roomData){
             if(!err){                
                 roomData.moves.push(data);
+                console.log(roomData);
                 socket.broadcast.to(data.room).emit('move', data);
                 // could be race conditions here but I am updating data emitting
                 // if some problems are coming then do the safe but less fast way
