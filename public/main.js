@@ -58,6 +58,27 @@ $(document).ready(function(){
               ]
       };
 
+      function globalStateLogger(all){
+        // log all
+          if(all){
+            console.log("global : ");console.log( globalState);
+            console.log("objectMap :");console.log( objectMap);
+            console.log("specialSquares :");console.log( specialSquares);
+            console.log("selectedSquare :");console.log( selectedSquare);
+            console.log("moveToSquare :");console.log( moveToSquare); 
+            console.log("validMoves :");console.log( validMoves);
+            console.log("master ");console.log( master);
+            console.log("turn ");console.log( turn);
+            console.log("iAm ");console.log( iAm);
+          }else{
+            // partial
+            console.log("selectedSquare :");console.log( selectedSquare);
+            console.log("turn ");console.log( turn);
+            console.log("iAm ");console.log( iAm);
+          }
+
+      }
+
       var canvas = document.getElementById('canvas'),
           ctx = canvas.getContext('2d'),
           canvasW,
@@ -190,6 +211,7 @@ $(document).ready(function(){
                   selectedSquare = null;
               }
           }else{
+              globalStateLogger(false);
               // move that square
               if(moveToSquare = posToSquarePos(pos)){
                   if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
