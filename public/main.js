@@ -646,6 +646,12 @@ $(document).ready(function(){
         spectator = true;
         console.log("spec");
       });
+      socket.on('playerDisconnect', function(){
+        alert("other player disconnected");
+      });
+      socket.on('spectatorDisconnect', function(){
+        console.log("spectator disconnected");
+      });
 
       // make a generic send function that adds room to each emit
 });

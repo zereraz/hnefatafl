@@ -4,6 +4,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var level = require('levelup');
 var db = level('./databaseDirectory', { valueEncoding: 'json' });
+var sockDb = level('./socketsDb', { valueEncoding: 'json' });
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var session = require('express-session');
@@ -74,7 +75,7 @@ app.post('/create-room', function(req, res){
                 'count': 0,
                 'gameCount': 0,
                 'moves': []
-            }
+            };
 			db.put(roomName, value, function(err){
 				if(!err){
 						req.session.pass = req.body.password;
@@ -105,12 +106,34 @@ io.on('connection', function(socket){
                 socket.join(data.room);
                 roomData.count+=1;
                 if(roomData.count == 1){
-                    socket.emit('master');
+                    sockDb.put(socket.id, {"room":data.room, "type":"p"} , function(err){
+                        if(!err){
+                            console.log("socket(master) put in db");                        
+                        }else{
+                            console.log("err with putting master socket");
+                        }
+                    });
+                    socket.emit('master');                     
                 }else if(roomData.count > 2){
+                    sockDb.put(socket.id, {"room":data.room, "type":"s"}, function(err){
+                        if(!err){
+                            console.log("spec added");
+                        }else{
+                            console.log("error adding spec");                                
+                        }
+                    });
                     socket.emit('spectator');
-                }                    
+                }else{
+                    // 2nd player
+                    sockDb.put(socket.id, {"room":data.room, "type":"p"}, function(err){
+                        if(!err){
+                            console.log("2nd socket put in db");                        
+                        }else{
+                            console.log("err with putting master socket");
+                        }
+                    });
 
-                console.log("key : "+data.room);
+                }
                 db.put(data.room, roomData, function(err){
                     if(!err){                    
                         console.log(roomData.count);
@@ -159,7 +182,25 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('disconnect', function(){
-    console.log('user disconnected');
+        sockDb.get(socket.id, function(err, data){
+            if(data.type=='p'){
+                io.to(data.room).emit('playerDisconnect');
+            }else if(data.type=='s'){
+                io.to(data.room).emit('spectatorDisconnect');
+                
+            }
+            db.get(data.room, function(err, roomData){
+                roomData.count-=1;
+                db.put(data.room, roomData, function(err){
+                    if(!err){
+                        console.log("player/spec disconnected, room count : "+roomData.count);
+                    }else{
+                        console.log("error/spec in player disconnect");
+                    }
+                });
+            }); 
+        });
+        console.log('user disconnected');
   });
 });
 
