@@ -265,7 +265,7 @@ $(document).ready(function(){
       }
 
       function isValidMove(selected, moveTo){
-        if(turn && getRole(selected)===iAm && !speactator){
+        if(turn && getRole(selected)===iAm && !spectator){
           if(selected.x === moveTo.x || selected.y === moveTo.y){
               if(!posInSpecialSquare(moveTo) || isKing(selected))
                   return nothingBetween(selected, moveTo);
