@@ -113,6 +113,7 @@ io.on('connection', function(socket){
                             console.log("err with putting master socket");
                         }
                     });
+                    socket.emit('player');                     
                     socket.emit('master');                     
                 }else if(roomData.count > 2){
                     sockDb.put(socket.id, {"room":data.room, "type":"s"}, function(err){
@@ -124,6 +125,7 @@ io.on('connection', function(socket){
                     });
                     socket.emit('spectator');
                 }else{
+                    socket.emit('player');                     
                     // 2nd player
                     sockDb.put(socket.id, {"room":data.room, "type":"p"}, function(err){
                         if(!err){
@@ -177,6 +179,7 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('setIAm', function(data){
+        console.log("SETIAM");
 		socket.broadcast.to(data.room).emit('setIAm', data);
 		// io.to(data.room).emit('setIAm', data);
 	});

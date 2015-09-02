@@ -14,7 +14,9 @@ $(document).ready(function(){
           spectator = false,
           selectedColor = "#4e4e56";
 
-      var socket;
+      var socket = io();
+          socket.emit('my-room',{'room':getRoom()});            
+          console.log('emiting my-room');
       // chief/king is fist
       // shield are one's protecting king
       // swords are those trying to capture king
@@ -237,6 +239,7 @@ $(document).ready(function(){
               if(moveToSquare = posToSquarePos(pos)){
                   if(!posToSquare(pos) && isValidMove(selectedSquare, moveToSquare)){
                       socket.emit('move', {'from':selectedSquare, 'to':moveToSquare,'room':getRoom()});
+                      console.log('emiting move');
                       findAndReplace(selectedSquare, moveToSquare);
                       render();
                   }else if(posToSquare(pos)){
@@ -558,20 +561,21 @@ $(document).ready(function(){
         iAm = "swords";
         turn = false;
         socket.emit('setIAm',{'iAm': 'shield', 'room':getRoom()});
+        console.log('emiting setIAm');
       }
 
       function init(){
 
         vex.defaultOptions.className = 'vex-theme-wireframe';
-        initDialogs();
-        // connect socket
-        socket = io();
-        socket.emit('my-room',{'room':getRoom()});
-        updateStatus('Waiting for opponent');
-        chooseSide();
-        // show modal, select side
-        // change background color depending on whose turn it is
-        //
+        if(!spectator){
+            initDialogs();
+            // connect socket
+            updateStatus('Waiting for opponent');
+            chooseSide();
+            // show modal, select side
+            // change background color depending on whose turn it is
+            //        
+        }
       }
 
       function updateStatus(status){
@@ -610,8 +614,6 @@ $(document).ready(function(){
 
       }
 
-      addEvents();
-      init();
       // highlight allowed moves with #c3fd53
 
       socket.on('connection', function(){
@@ -621,7 +623,6 @@ $(document).ready(function(){
       socket.on('room-joint', function(){
         // fix bug here, semd to person who sent room
         updateStatus('room joint!');
-        setIAm();
       });
       socket.on('move', function(data){
         findAndReplace(data.from, data.to);
@@ -637,6 +638,11 @@ $(document).ready(function(){
           turn = true;
           updateStatus("Your turn "+iAm +" !");
         }
+      });
+      socket.on('player', function(){
+          init();
+          addEvents();
+          setIAm();
       });
       socket.on('master', function(){
         master = true;
