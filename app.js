@@ -74,7 +74,8 @@ app.post('/create-room', function(req, res){
                 'pass': req.body.password,
                 'count': 0,
                 'gameCount': 0,
-                'moves': []
+                'moves': [],
+                'sock': []
             };
 			db.put(roomName, value, function(err){
 				if(!err){
@@ -104,9 +105,11 @@ io.on('connection', function(socket){
         db.get(data.room, function(err, roomData){
             if(!err){
                 socket.join(data.room);
-                roomData.count+=1;
+                roomData.count += 1;
+                console.log(roomData);
+                roomData.sock.push(socket.id);
                 if(roomData.count == 1){
-                    sockDb.put(socket.id, {"room":data.room, "type":"p"} , function(err){
+                    sockDb.put(socket.id, {"room": data.room, "type": "p", "iAm": null} , function(err){
                         if(!err){
                             console.log("socket(master) put in db");                        
                         }else{
@@ -125,11 +128,12 @@ io.on('connection', function(socket){
                     });
                     socket.emit('spectator');
                 }else{
-                    socket.emit('player');                     
+                    socket.emit('player');              
                     // 2nd player
-                    sockDb.put(socket.id, {"room":data.room, "type":"p"}, function(err){
+                    sockDb.put(socket.id, {"room":data.room, "type":"p", "iAm":null}, function(err){
                         if(!err){
                             console.log("2nd socket put in db");                        
+                            io.to(data.room).emit('showDialog');
                         }else{
                             console.log("err with putting master socket");
                         }
@@ -179,8 +183,38 @@ io.on('connection', function(socket){
 	});
 
 	socket.on('setIAm', function(data){
-        console.log("SETIAM");
-		socket.broadcast.to(data.room).emit('setIAm', data);
+        sockDb.get(socket.id, function(err, result){
+           if(!err){
+             if(result.iAm){
+                data.iAm = result.iAm;
+                socket.emit('setIAm', {'iAm': result.iAm});
+             }else{
+                db.get(data.room, function(err, roomData){
+                    var opponent;
+                    if(socket.id === roomData.sock[0]){
+                        opponent = roomData.sock[1];
+                    }else{
+                        opponent = roomData.sock[0];
+                    }
+                    sockDb.get(opponent, function(err, sockData){
+                        if(!sockData.iAm){
+                           sockData.iAm = data.opponent;
+                           sockDb.put(opponent, sockData, function(err){
+                                if(!err){                                   
+                                    socket.emit('setIAm', {'iAm': result.iAm=='swords'?'shield':'swords'});
+                                    
+                                }
+                           });
+                        }else{
+                            console.log('already set for the opponent');
+                        }
+                    
+                    });            
+                });
+             
+             }
+           }
+        });
 		// io.to(data.room).emit('setIAm', data);
 	});
 

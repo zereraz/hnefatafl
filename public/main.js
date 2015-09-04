@@ -549,7 +549,6 @@ $(document).ready(function(){
 
       function initDialogs(){
         //selectSideDialog();
-        rulesDialog();
       }
 
       function getRoom(){
@@ -557,10 +556,17 @@ $(document).ready(function(){
         return path[path.length-1];
       }
 
-      function setIAm(){
-        iAm = "swords";
-        turn = false;
-        socket.emit('setIAm',{'iAm': 'shield', 'room':getRoom()});
+      function setIAm(side){
+        iAm = side;
+        var opponent;
+        if(side === 'swords'){
+            opponent = 'shield';
+            turn = true;
+        }else{
+            opponent = 'swords';
+            turn = false;
+        }
+        socket.emit('setIAm',{'opponent': opponent, 'room':getRoom()});
         console.log('emiting setIAm');
       }
 
@@ -571,7 +577,6 @@ $(document).ready(function(){
             initDialogs();
             // connect socket
             updateStatus('Waiting for opponent');
-            chooseSide();
             // show modal, select side
             // change background color depending on whose turn it is
             //        
@@ -604,15 +609,19 @@ $(document).ready(function(){
           ],
           callback: function(data) {
             if (data === false) {
-              return console.log(data);
+                // defender
+              setIAm('shield');
             }else{
-              return console.log(data);
+                // attacker
+              setIAm('swords');
             }
             //return console.log('Username', data.username, 'Password', data.password);
+            rulesDialog();
           }
         });
 
       }
+
 
       // highlight allowed moves with #c3fd53
 
@@ -633,6 +642,7 @@ $(document).ready(function(){
         render();
       });
       socket.on('setIAm', function(data){
+        console.log('set iam '+data);
         iAm = data.iAm;
         if(iAm === "shield"){
           turn = true;
@@ -642,7 +652,6 @@ $(document).ready(function(){
       socket.on('player', function(){
           init();
           addEvents();
-          setIAm();
       });
       socket.on('master', function(){
         master = true;
@@ -657,6 +666,9 @@ $(document).ready(function(){
       });
       socket.on('spectatorDisconnect', function(){
         console.log("spectator disconnected");
+      });
+      socket.on('showDialog', function(){ 
+        chooseSide();
       });
 
       // make a generic send function that adds room to each emit
