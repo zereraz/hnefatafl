@@ -228,13 +228,22 @@ io.on('connection', function(socket){
             }
             db.get(data.room, function(err, roomData){
                 roomData.count-=1;
-                db.put(data.room, roomData, function(err){
-                    if(!err){
-                        console.log("player/spec disconnected, room count : "+roomData.count);
-                    }else{
-                        console.log("error/spec in player disconnect");
-                    }
-                });
+                if(roomData.count === 0){
+                    db.del(data.room, function(err){
+                        if(!err){
+                            console.log(data.room + " room deleted");
+                        }
+                    });
+                }else{
+                    db.put(data.room, roomData, function(err){
+                        if(!err){
+                            console.log("player/spec disconnected, room count : "+roomData.count);
+                        }else{
+                            console.log("error/spec in player disconnect");
+                        }
+                    });
+                
+                }
             }); 
         });
         console.log('user disconnected');
