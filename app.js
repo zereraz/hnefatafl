@@ -30,24 +30,24 @@ app.get('/', function(req, res){
             e = "Room does not exist";
             break;
     }
-	res.render('home',{"message":e});
+  res.render('home',{"message":e});
 });
 
 
 app.get('/room/:name', function(req, res){
-			db.get(req.params.name, function(err, data){
-				if(err){
-					if(err.notFound){
-						res.redirect('/?q=rde');
-					}
-				}else{
-					if(req.session.pass === data.pass){
-						res.render('room',{"name":req.params.name, "confirm":true});
-					}else{
-						res.render('room', {"name":req.params.name, "confirm":false});
-					}
-				}
-			});
+      db.get(req.params.name, function(err, data){
+      if(err){
+        if(err.notFound){
+          res.redirect('/?q=rde');
+        }
+      }else{
+        if(req.session.pass === data.pass){
+          res.render('room',{"name":req.params.name, "confirm":true});
+        }else{
+          res.render('room', {"name":req.params.name, "confirm":false});
+        }
+      }
+    });
 });
 
 app.post('/room/:name', function(req, res){
@@ -116,8 +116,8 @@ io.on('connection', function(socket){
                             console.log("err with putting master socket");
                         }
                     });
-                    socket.emit('player');                     
-                    socket.emit('master');                     
+                    socket.emit('player');
+                    socket.emit('master');
                 }else if(roomData.count > 2){
                     sockDb.put(socket.id, {"room":data.room, "type":"s"}, function(err){
                         if(!err){

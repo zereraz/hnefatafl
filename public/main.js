@@ -5,21 +5,6 @@ $(document).ready(function(){
       var globalState = getInitGlobalState();
       var cubeW,
           cubeH;
-      var selectedSquare = null,
-          moveToSquare = null,
-          validMoves = [],
-          turn = false,
-          master = false,
-          iAm = null,
-          spectator = false,
-          selectedColor = "#4e4e56";
-
-      var socket = io();
-          socket.emit('my-room',{'room':getRoom()});            
-          console.log('emiting my-room');
-      // chief/king is fist
-      // shield are one's protecting king
-      // swords are those trying to capture king
       var objectMap = {
         "fist" : {
                       color:"#efc818",
@@ -52,6 +37,22 @@ $(document).ready(function(){
                       ]
                   }
       };
+      var selectedSquare = objectMap.fist.pos[0],
+          moveToSquare = objectMap.fist.pos[0],
+          validMoves = [],
+          turn = false,
+          master = false,
+          iAm = null,
+          spectator = false,
+          selectedColor = "#4e4e56";
+
+      var socket = io();
+          socket.emit('my-room',{'room':getRoom()});            
+          console.log('emiting my-room');
+      // chief/king is fist
+      // shield are one's protecting king
+      // swords are those trying to capture king
+      
 
       var specialSquares = {
               color: "#c0d5db",
@@ -130,7 +131,8 @@ $(document).ready(function(){
       }
 
       function checkGameConditions() {
-        checkAllPlayerDeath();
+        //checkAllPlayerDeath();
+        checkMovedAndAroundDeath();
         checkGameOver();
       }
 
@@ -341,6 +343,7 @@ $(document).ready(function(){
 
       //use the find function here
       function findAndReplace(square, newSquare){
+          moveToSquare = newSquare;
           turn = false;
           updateStatus("Opponents turn!");
           for(var key in objectMap){
@@ -386,6 +389,18 @@ $(document).ready(function(){
                   checkPlayerDeath(arr[pos]);
               }
           }
+      }
+
+      function checkMovedAndAroundDeath(){
+        var listToCheck = [];        
+        listToCheck.push({x:moveToSquare.x + 1, y: moveToSquare.y});
+        listToCheck.push({x:moveToSquare.x - 1, y: moveToSquare.y});
+        listToCheck.push({x:moveToSquare.x, y: moveToSquare.y + 1});
+        listToCheck.push({x:moveToSquare.x, y: moveToSquare.y - 1});        
+        listToCheck.push(moveToSquare);
+        listToCheck.forEach(function(square){
+          checkPlayerDeath(square);
+        });
       }
 
       function edgeCount(square){
@@ -441,23 +456,25 @@ $(document).ready(function(){
 
       // please refactor!!!
       function checkPlayerDeath(square){
-          var currentRole = getRole(square);
-          if(currentRole === 'shield'){
-              // if(getRole({x:square.x+1, y:square.y}) === 'swords' && getRole({x:square.x-1, y:square.y}) === 'swords' || getRole({x:square.x, y:square.y+1}) === 'swords' && getRole({x:square.x, y:square.y-1}) === 'swords'){
-              //     removeSquare(square, currentRole);
-              // }
-              if(surroundingSwords(square) >=2){
-                removeSquare(square, currentRole);
-              }
-          }else if(currentRole === 'swords'){
-              // if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1 &&  ['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1 || ['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1 && ['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
-              //     removeSquare(square, currentRole);
-              // }
-              if(surroundingShields(square) >=2){
-                removeSquare(square, currentRole);
-              }
-          }else if(currentRole === 'fist'){
+          var currentRole = getRole(moveToSquare);
 
+          if(currentRole === 'shield'){
+              if(getRole({x:square.x+1, y:square.y}) === 'swords' && getRole({x:square.x-1, y:square.y}) === 'swords' || getRole({x:square.x, y:square.y+1}) === 'swords' && getRole({x:square.x, y:square.y-1}) === 'swords'){
+                  removeSquare(square, currentRole);
+              }
+              // if(surroundingSwords(square) >=2){
+              //   removeSquare(square, currentRole);
+              // }
+          }
+          if(currentRole === 'swords'){
+              if(['shield','fist'].indexOf(getRole({x:square.x+1, y:square.y})) !== -1 &&  ['shield','fist'].indexOf(getRole({x:square.x-1, y:square.y})) !== -1 || ['shield','fist'].indexOf(getRole({x:square.x, y:square.y+1})) !== -1 && ['shield','fist'].indexOf(getRole({x:square.x, y:square.y-1})) !== -1){
+                  removeSquare(square, currentRole);
+              }
+              // if(surroundingShields(square) >=2){
+              //   removeSquare(square, currentRole);
+              // }
+          }
+          if(currentRole === 'fist'){
               return;
           }
       }
@@ -511,6 +528,18 @@ $(document).ready(function(){
         }
       }
 
+      function isNotEmpty(square){
+        for(var key in objectMap){
+          var arr = objectMap[key].pos;
+          for(var pos in arr){
+              if(arr[pos].x === square.x && arr[pos].y === square.y){
+                  return arr[pos];
+              }
+          }
+        }
+        return null;
+      }
+
       function drawCircle(x, y, r, c){
         ctx.beginPath();
         ctx.arc(x, y, r, 0, 2 * Math.PI, false);
@@ -520,17 +549,74 @@ $(document).ready(function(){
       // this shows all moves, need to shrink it depending on position
       // now it is showing moves that cannot be played due to blocking of other players
       function allMoves(square){
-        for(var i = 0; i < 11; i++){
-          if(square.x !== i){
-            if(!posInSpecialSquare({x:i, y:square.y}))
-              validMoves.push({x:i, y:square.y});
-          }
-          if(square.y !== i){
-            if(!posInSpecialSquare({x:square.x, y:i}))
-              validMoves.push({x:square.x, y:i});
+        // for(var i = 0; i < 11; i++){
+        //   if(square.x !== i){
+        //     if(!posInSpecialSquare({x:i, y:square.y}))
+        //       validMoves.push({x:i, y:square.y});
+        //   }
+        //   if(square.y !== i){
+        //     if(!posInSpecialSquare({x:square.x, y:i}))
+        //       validMoves.push({x:square.x, y:i});
+        //   }
+        // }
+        allValidX(square);
+        allValidY(square);
+      }
+      function allValidX(square){
+        allValidXPos(square);
+        allValidXNeg(square);
+      }
+      function allValidXPos(square){
+        var currentSquare = null;        
+        for(var i = square.x + 1 ; i < 11; i++){
+          currentSquare = {x:i, y:square.y};
+          if(!isNotEmpty(currentSquare)){
+            validMoves.push(currentSquare);
+          }else{
+            return;
           }
         }
       }
+        
+      function allValidXNeg(square){
+        var currentSquare = null;
+        for(var i = square.x - 1 ; i >= 0; i--){
+          currentSquare = {x:i, y:square.y};
+          if(!isNotEmpty(currentSquare)){
+            validMoves.push(currentSquare);
+          }else{            
+            return;
+          }
+        }
+      }      
+      function allValidY(square){
+        allValidYPos(square);        
+        allValidYNeg(square);
+      }
+
+      function allValidYPos(square){
+        var currentSquare = null;
+        for(var i = square.y + 1 ; i < 11; i++){
+          currentSquare = {x:square.x, y:i};
+          if(!isNotEmpty(currentSquare)){
+            validMoves.push(currentSquare);
+          }else{
+            break;
+          }
+        }
+      }
+        
+      function allValidYNeg(square){
+        var currentSquare = null;
+        for(var i = square.y - 1 ; i >= 0; i--){
+          currentSquare = {x:square.x, y:i};
+          if(!isNotEmpty(currentSquare)){
+            validMoves.push(currentSquare);
+          }else{
+            break;
+          }
+        }
+      } 
 
       function addEvents(){
           canvas.addEventListener("click", getPosition, false);
@@ -634,7 +720,7 @@ $(document).ready(function(){
         updateStatus('room joint!');
       });
       socket.on('move', function(data){
-        findAndReplace(data.from, data.to);
+        findAndReplace(data.from, data.to);        
         turn = true;
         updateStatus("Your turn "+iAm +" !");
       });
